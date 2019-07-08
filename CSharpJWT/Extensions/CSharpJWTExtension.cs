@@ -37,10 +37,15 @@
         }
 
         public static IServiceCollection AddJWTAuthentication(this IServiceCollection services,
-            IConfiguration configuration,
-            string defaultScheme = JwtBearerDefaults.AuthenticationScheme)
+            IConfiguration configuration)
         {
-            services.AddAuthentication(defaultScheme).AddJwtBearer(options =>
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+            }).AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -51,6 +56,25 @@
                     ValidIssuer = configuration.GetValue<string>("JWTSettings:Issuer"),
                     ValidAudience = configuration.GetValue<string>("JWTSettings:Audience"),
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(GetsecretKey()))
+                };
+                options.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = async (AuthenticationFailedContext) => 
+                    {
+                        //TODO Some logic
+                    },
+                    OnChallenge = async (JwtBearerChallengeContext) => 
+                    {
+                        //TODO Some logic
+                    },
+                    OnMessageReceived = async (MessageReceivedContext) => 
+                    {
+                        //TODO Some logic
+                    },
+                    OnTokenValidated = async (TokenValidatedContext) => 
+                    {
+                        //TODO Some logic
+                    },
                 };
             });
 
