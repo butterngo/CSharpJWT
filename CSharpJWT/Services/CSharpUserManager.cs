@@ -6,6 +6,7 @@
     using CSharpJWT.Domain;
     using CSharpJWT.Models;
     using Microsoft.AspNetCore.Identity;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
 
@@ -14,6 +15,10 @@
         private readonly CSharpSignInManager _signInManager;
 
         private readonly ITokenService _tokenService;
+
+        private readonly CSharpJWTContext _context;
+
+        private const string UsernameOrPasswordIncorrect = "Username or password incorrect.";
 
         public CSharpUserManager(IUserStore<User> store,
             IOptions<IdentityOptions> optionsAccessor,
@@ -25,12 +30,15 @@
             IServiceProvider services,
             ILogger<UserManager<User>> logger,
             CSharpSignInManager signInManager,
-            ITokenService tokenService) 
+            ITokenService tokenService,
+            CSharpJWTContext context) 
             : base(store, optionsAccessor, passwordHasher, userValidators, passwordValidators, keyNormalizer, errors, services, logger)
         {
             _signInManager = signInManager;
 
             _tokenService = tokenService;
+
+            _context = context;
         }
 
         public static IdentityOptions CreateOptions(IdentityOptions options)
@@ -45,12 +53,19 @@
             return options;
         }
 
-        public Task<UserResult> VerifyUserAsync(string clientId,
+        public async Task<UserResult> VerifyUserAsync(string clientId,
             string username,
             string password,
             TokenRequest tokenRequest)
         {
-            throw new NotImplementedException();
+            var user = await FindByNameAsync(username);
+
+            if(user == null) return new UserResult(new { error = UsernameOrPasswordIncorrect });
+
+            if (!await _context.UserClients.AnyAsync(x => x.ClientId == clientId && x.UserId == user.Id))
+                 return new UserResult(new { error = "Invalid client." });
+            
+            return await VerifyUserAsync(username, password, tokenRequest);
         }
 
         public async Task<UserResult> VerifyUserAsync(string username,
@@ -61,7 +76,7 @@
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, password, false);
 
-            if (!result.Succeeded) return new UserResult(new { error = "User name or password incorrect" });
+            if (!result.Succeeded) return new UserResult(new { error = UsernameOrPasswordIncorrect });
 
             return await GenerateBearerTokenAsync(user, tokenRequest);
         }
@@ -87,5 +102,6 @@
 
             return new UserResult(await _tokenService.GenerateTokenAsync(tokenRequest));
         }
+
     }
 }

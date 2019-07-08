@@ -4,14 +4,16 @@ using CSharpJWT.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CSharpJWT.Migrations
 {
     [DbContext(typeof(CSharpJWTContext))]
-    partial class CSharpJWTContextModelSnapshot : ModelSnapshot
+    [Migration("20190708121748_Update-Table-UserClient1")]
+    partial class UpdateTableUserClient1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

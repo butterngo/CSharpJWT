@@ -12,7 +12,7 @@
         public virtual User User { get; set; }
         
         public string ClientId { get; set; }
-        [ForeignKey("UserId")]
+        [ForeignKey("ClientId")]
         public virtual Client Client { get; set; }
     }
 }

@@ -3,10 +3,7 @@
     using CSharpJWT.Models;
     using CSharpJWT.Services;
     using Microsoft.AspNetCore.Http;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Serialization;
     using System;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     public class TokenProviderMiddleware
@@ -54,43 +51,24 @@
                 return;
             }
 
-
             string clientId = string.Empty;
 
             if (_options.VerifyClient)
             {
-                var headers = context.Request.Headers;
-
-                string secretKey = string.Empty;
-
-                try
-                {
-                    if (!string.IsNullOrEmpty(headers["Authorization"]))
-                    {
-                        var array = headers["Authorization"].ToString().Split(' ');
-                        secretKey = array[1];
-                    }
-                }
-                catch
-                {
-                    await BadRequest(context, new { error = "Invalid client" });
-
-                    return;
-                }
-
                 IServiceProvider serviceProvider = context.RequestServices;
 
                 var clientService = (IClientService)serviceProvider.GetService(typeof(IClientService));
 
-                clientId = await clientService.VerifyClientAsync(secretKey);
+                var clientResult = await clientService.VerifyClientAsync(context);
 
-                if (string.IsNullOrEmpty(clientId))
+                if (!clientResult.Successed)
                 {
-                    await BadRequest(context, new { error = "Invalid client" });
+                    await BadRequest(context, clientResult.Error);
 
                     return;
                 }
 
+                clientId = clientResult.Id;
             }
 
             switch (grantType)

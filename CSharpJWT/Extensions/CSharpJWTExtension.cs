@@ -18,7 +18,6 @@
         public static IApplicationBuilder AddJWTMiddleware(this IApplicationBuilder app,
             IConfiguration configuration,
             string path = "/CSharp-token",
-            bool verifyClient = false,
             int tokenExpiration = 20,
             int refreshTokenExpiration = 1440)
         {
@@ -28,7 +27,7 @@
                 Audience = configuration.GetValue<string>("JWTSettings:Audience"),
                 Issuer = configuration.GetValue<string>("JWTSettings:Issuer"),
                 SecurityKey = GetsecretKey(),
-                VerifyClient = verifyClient,
+                VerifyClient = configuration.GetValue<bool>("JWTSettings:VerifyClient"),
                 TokenExpiration = TimeSpan.FromSeconds(+tokenExpiration),
                 RefreshTokenExpiration = TimeSpan.FromMinutes(+refreshTokenExpiration)
             });
