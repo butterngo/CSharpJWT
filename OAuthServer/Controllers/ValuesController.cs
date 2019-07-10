@@ -1,12 +1,13 @@
 ﻿namespace OAuthServer.Controllers
 {
     using System.Collections.Generic;
+    using CSharpJWT.Attributes;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [CSharpAuthorization]
     public class ValuesController : ControllerBase
     {
         // GET api/values

@@ -42,11 +42,11 @@
 
                     string secret = credentials[1];
 
-                    var result = await Clients.SingleOrDefaultAsync(x => x.ClientId.Equals(clientId) && x.Secret.Equals(secret));
+                    var client = await Clients.SingleOrDefaultAsync(x => x.ClientId.Equals(clientId) && x.Secret.Equals(secret));
 
-                    if(result == null ) return new ClientResult(new { error = InvalidSecretKey });
+                    if(client == null ) return new ClientResult(new { error = InvalidSecretKey });
 
-                    return new ClientResult(result.Id);
+                    return new ClientResult(client);
                 }
                 else
                 {

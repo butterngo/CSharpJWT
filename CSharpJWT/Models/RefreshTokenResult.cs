@@ -1,38 +1,30 @@
-﻿using System;
-
-namespace CSharpJWT.Models
+﻿namespace CSharpJWT.Models
 {
+    using System;
+
     public class RefreshTokenResult
     {
         public RefreshTokenResult()
         {
-            Successed = true;
+            Succeeded = true;
         }
 
         public RefreshTokenResult(object error)
         {
-            Successed = false;
+            Succeeded = false;
             Error = error;
         }
 
         public RefreshTokenResult(string clientId, string userId)
         {
-            Successed = true;
+            Succeeded = true;
             UserId = userId;
             ClientId = clientId;
         }
 
-        public RefreshTokenResult(string clientId, string userId, DateTime expirationDate)
-        {
-            Successed = true;
-            UserId = userId;
-            ClientId = clientId;
-            ExpirationDate = expirationDate;
-        }
-        public bool Successed { get; set; }
+        public bool Succeeded { get; set; }
         public string UserId { get; set; }
         public string ClientId { get; set; }
         public object Error { get; set; }
-        public DateTime ExpirationDate { get; set; }
     }
 }

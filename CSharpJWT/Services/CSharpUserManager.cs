@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Security.Claims;
     using System.Threading.Tasks;
     using CSharpJWT.Domain;
     using CSharpJWT.Models;
@@ -53,55 +54,86 @@
             return options;
         }
 
-        public async Task<UserResult> VerifyUserAsync(string clientId,
+        public async Task<UserResult> VerifyUserAsync(ClientResult clientResult,
             string username,
             string password,
             TokenRequest tokenRequest)
         {
-            var user = await FindByNameAsync(username);
+            tokenRequest.User = await FindByNameAsync(username);
 
-            if(user == null) return new UserResult(new { error = UsernameOrPasswordIncorrect });
+            tokenRequest.Client = clientResult.Client;
 
-            if (!await _context.UserClients.AnyAsync(x => x.ClientId == clientId && x.UserId == user.Id))
+            if (tokenRequest.User == null) return new UserResult(new { error = UsernameOrPasswordIncorrect });
+
+            if (!await _context.UserClients.AnyAsync(x => x.ClientId == clientResult.Client.Id && x.UserId == tokenRequest.User.Id))
                  return new UserResult(new { error = "Invalid client." });
-            
-            return await VerifyUserAsync(username, password, tokenRequest);
+
+            var result = await VerifyUserAsync(tokenRequest.User, password);
+
+            if (!result.Succeeded) return result;
+
+            return await GenerateBearerTokenAsync(tokenRequest);
         }
 
         public async Task<UserResult> VerifyUserAsync(string username,
             string password,
             TokenRequest tokenRequest)
         {
-            var user = await FindByNameAsync(username);
+            tokenRequest.User = await FindByNameAsync(username);
 
-            var result = await _signInManager.CheckPasswordSignInAsync(user, password, false);
+            var result = await VerifyUserAsync(tokenRequest.User, password);
 
-            if (!result.Succeeded) return new UserResult(new { error = UsernameOrPasswordIncorrect });
-
-            return await GenerateBearerTokenAsync(user, tokenRequest);
+            if (!result.Succeeded) return result;
+            
+            return await GenerateBearerTokenAsync(tokenRequest);
         }
 
         public async Task<UserResult> RefreshAccessTokenAsync(string token, TokenRequest tokenRequest)
         {
             var refreshTokenResult = await _tokenService.VerifyRefreshTokenAsync(token);
 
-            if (!refreshTokenResult.Successed) return new UserResult(refreshTokenResult.Error);
+            if (!refreshTokenResult.Succeeded) return new UserResult(refreshTokenResult.Error);
 
-            var user = await FindByIdAsync(refreshTokenResult.UserId);
+            tokenRequest.User = await FindByIdAsync(refreshTokenResult.UserId);
 
-            return await GenerateBearerTokenAsync(user, tokenRequest);
+            tokenRequest.Client = await _context.Clients.SingleOrDefaultAsync(x => x.Id.Equals(refreshTokenResult.ClientId));
+
+            return await GenerateBearerTokenAsync(tokenRequest);
         }
 
-        public async Task<UserResult> GenerateBearerTokenAsync(User user, TokenRequest tokenRequest)
+        public async Task<UserResult> GenerateBearerTokenAsync(TokenRequest tokenRequest)
         {
-            tokenRequest.Claims.Add(new CustomClaim(CSharpClaimsIdentity.IssuerClaimType, tokenRequest.Issuer));
+            var client = tokenRequest.Client;
 
-            tokenRequest.Claims.Add(new CustomClaim(CSharpClaimsIdentity.DefaultNameClaimType, user.Id));
+            var user = tokenRequest.User;
 
-            tokenRequest.Claims.Add(new CustomClaim(CSharpClaimsIdentity.EmailClaimType, user.UserName));
+            if (client != null)
+            {
+                tokenRequest.Claims.Add(new Claim(CSharpClaimsIdentity.ClientKeyClaimType, client.Id));
+
+                tokenRequest.Claims.Add(new Claim(CSharpClaimsIdentity.ClientIdClaimType, client.ClientId));
+
+                tokenRequest.Claims.Add(new Claim(CSharpClaimsIdentity.ClientNameClaimType, client.ClientName));
+
+                tokenRequest.Claims.Add(new Claim(CSharpClaimsIdentity.AudienceClaimType, client.ClientUri));
+            }
+            
+            tokenRequest.Claims.Add(new Claim(CSharpClaimsIdentity.IssuerClaimType, tokenRequest.Issuer));
+
+            tokenRequest.Claims.Add(new Claim(CSharpClaimsIdentity.DefaultNameClaimType, user.Id));
+
+            tokenRequest.Claims.Add(new Claim(CSharpClaimsIdentity.EmailClaimType, user.UserName));
 
             return new UserResult(await _tokenService.GenerateTokenAsync(tokenRequest));
         }
 
+        private async Task<UserResult> VerifyUserAsync(User user, string password)
+        {
+            var result = await _signInManager.CheckPasswordSignInAsync(user, password, false);
+
+            if (!result.Succeeded) return new UserResult(new { error = UsernameOrPasswordIncorrect });
+
+            return new UserResult();
+        }
     }
 }

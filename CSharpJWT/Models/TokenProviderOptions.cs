@@ -6,7 +6,9 @@
     {
         public TokenProviderOptions() { }
 
-        public string Path { get; set; } = "/CSharp-token";
+        public string TokenPath { get; set; } = "/CSharp-token";
+
+        public string RevokePath { get;set; } = "/CSharp-revoke-token";
 
         public string Issuer { get; set; }
 

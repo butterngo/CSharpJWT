@@ -1,5 +1,6 @@
 ﻿namespace CSharpJWT.Models
 {
+    using CSharpJWT.Domain;
     using System;
     using System.Collections.Generic;
     using System.Text;
@@ -8,20 +9,20 @@
     {
         public ClientResult() { }
 
-        public ClientResult(string id)
+        public ClientResult(Client client)
         {
-            Successed = true;
-            Id = id;
+            Succeeded = true;
+            Client = client;
         }
 
         public ClientResult(object error)
         {
-            Successed = false;
+            Succeeded = false;
             Error = error;
         }
 
-        public bool Successed { get; set; }
-        public string Id { get; set; }
+        public bool Succeeded { get; set; }
+        public Client Client { get; set; }
         public object Error { get; set; }
     }
 }

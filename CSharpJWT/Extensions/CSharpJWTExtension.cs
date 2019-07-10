@@ -17,18 +17,20 @@
     {
         public static IApplicationBuilder AddJWTMiddleware(this IApplicationBuilder app,
             IConfiguration configuration,
-            string path = "/CSharp-token",
-            int tokenExpiration = 20,
+            string tokenPath = "/CSharp-token",
+            string revokePath = "/CSharp-revoke-token",
+            int tokenExpiration = 30,
             int refreshTokenExpiration = 1440)
         {
             app.UseMiddleware<TokenProviderMiddleware>(new TokenProviderOptions
             {
-                Path = path,
+                TokenPath = tokenPath,
+                RevokePath = revokePath,
                 Audience = configuration.GetValue<string>("JWTSettings:Audience"),
                 Issuer = configuration.GetValue<string>("JWTSettings:Issuer"),
                 SecurityKey = GetsecretKey(),
                 VerifyClient = configuration.GetValue<bool>("JWTSettings:VerifyClient"),
-                TokenExpiration = TimeSpan.FromSeconds(+tokenExpiration),
+                TokenExpiration = TimeSpan.FromMinutes(+tokenExpiration),
                 RefreshTokenExpiration = TimeSpan.FromMinutes(+refreshTokenExpiration)
             });
 
@@ -55,25 +57,6 @@
                     ValidIssuer = configuration.GetValue<string>("JWTSettings:Issuer"),
                     ValidAudience = configuration.GetValue<string>("JWTSettings:Audience"),
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(GetsecretKey()))
-                };
-                options.Events = new JwtBearerEvents
-                {
-                    OnAuthenticationFailed = async (AuthenticationFailedContext) => 
-                    {
-                        //TODO Some logic
-                    },
-                    OnChallenge = async (JwtBearerChallengeContext) => 
-                    {
-                        //TODO Some logic
-                    },
-                    OnMessageReceived = async (MessageReceivedContext) => 
-                    {
-                        //TODO Some logic
-                    },
-                    OnTokenValidated = async (TokenValidatedContext) => 
-                    {
-                        //TODO Some logic
-                    },
                 };
             });
 

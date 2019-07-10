@@ -1,9 +1,12 @@
 ﻿namespace CSharpJWT.Services
 {
+    using CSharpJWT.Caches;
     using CSharpJWT.Domain;
+    using CSharpJWT.Extensions;
     using CSharpJWT.Models;
+    using Microsoft.AspNetCore.Authentication;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.Caching.Distributed;
     using Microsoft.IdentityModel.Tokens;
     using System;
     using System.Collections.Generic;
@@ -15,13 +18,11 @@
 
     public sealed class TokenService : ITokenService
     {
-        private readonly IDistributedCache _cache;
+        private readonly JWTTokenDistributedCache _cache;
 
         private readonly CSharpJWTContext _context;
 
-        private const string StringCipherPassword = "csharpvn";
-
-        public TokenService(IDistributedCache cache, CSharpJWTContext context)
+        public TokenService(JWTTokenDistributedCache cache, CSharpJWTContext context)
         {
             _cache = cache;
 
@@ -34,25 +35,28 @@
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var claims = new List<Claim>();
+            string cacheKey = $"access_token_{Guid.NewGuid().ToString()}";
 
-            foreach (var claim in dto.Claims)
-            {
-                claims.Add(new Claim(claim.Type, claim.Value.ToString()));
-            }
+            string refreshToken = await GenerateRefreshTokenAsync(dto);
 
-            var token = new JwtSecurityToken(
+            dto.Claims.Add(new Claim(CSharpClaimsIdentity.CacheKeyClaimType, cacheKey));
+
+            dto.Claims.Add(new Claim(CSharpClaimsIdentity.RefreshTokenClaimType, refreshToken));
+
+            var jwtSecurityToken = new JwtSecurityToken(
                 issuer: dto.Issuer,
                 audience: dto.Audience,
-                claims: claims,
+                claims: dto.Claims,
                 expires: DateTime.UtcNow.Add(dto.TokenExpiration),
                 signingCredentials: creds);
 
-            dto.Responses.Add("access_token", new JwtSecurityTokenHandler().WriteToken(token));
+            string token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+
+            dto.Responses.Add("access_token", token);
 
             dto.Responses.Add("token_expiration", dto.TokenExpiration.TotalSeconds);
 
-            dto.Responses.Add("refresh_token", await GenerateRefreshTokenAsync(dto));
+            dto.Responses.Add("refresh_token", refreshToken);
 
             dto.Responses.Add("refresh_token_expiration", dto.RefreshTokenExpiration.TotalSeconds);
 
@@ -67,6 +71,8 @@
 
             dic.Add("token_type", "Bearer");
 
+            await _cache.SetAsync(cacheKey, dto, token);
+
             return dic;
         }
 
@@ -74,37 +80,89 @@
         {
             var refreshToken = await _context
            .RefreshTokens
+           .Include(x=>x.User)
+           .Include(x=>x.Client)
            .SingleOrDefaultAsync(x => x.Id == token);
 
             if (refreshToken == null) return new RefreshTokenResult(new { error = "token invalid." });
 
-            if(refreshToken.ExpirationDate <= DateTime.UtcNow) return new RefreshTokenResult(new { error = "token expired." });
+            if (refreshToken.ExpirationDate <= DateTime.UtcNow) return new RefreshTokenResult(new { error = "token expired." });
 
-            return StringCipher.DecryptString(token, StringCipherPassword).ToObj<RefreshTokenResult>();
+            _context.RefreshTokens.Remove(refreshToken);
+
+            await _context.SaveChangesAsync();
+
+            return new RefreshTokenResult(refreshToken.ClientId, refreshToken.UserId);
+        }
+
+        public async Task<bool> IsValidTokenAsync(HttpContext context)
+        {
+            try
+            {
+                var cacheKey = context.User.Claims.GetValue(CSharpClaimsIdentity.CacheKeyClaimType);
+
+                var headers = context.Request.Headers["Authorization"];
+
+                var token = headers.ToString().Split(' ')[1];
+
+                var tokenInformation = await _cache.GetAsync(cacheKey);
+
+                if (tokenInformation == null) return false;
+
+                if (!tokenInformation.Token.Equals(token)) return false;
+
+                if (tokenInformation.ExpirationDate <= DateTime.UtcNow) return false;
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+
+        }
+
+        public bool IsValidToken(HttpContext context)
+        {
+            return IsValidTokenAsync(context).Result;
+        }
+
+        public async Task<bool> RevokeTokenAsync(AuthenticateResult authenticateResult)
+        {
+            var cacheKey = authenticateResult.Principal.Claims.GetValue(CSharpClaimsIdentity.CacheKeyClaimType);
+
+            var refreshTokenKey = authenticateResult.Principal.Claims.GetValue(CSharpClaimsIdentity.RefreshTokenClaimType);
+
+            var refreshToken = await _context
+              .RefreshTokens.SingleOrDefaultAsync(x => x.Id.Equals(refreshTokenKey));
+
+            if (refreshToken == null) return false;
+
+            _context.RefreshTokens.Remove(refreshToken);
+
+            await _cache.RemoveAsync(cacheKey);
+
+            await _context.SaveChangesAsync();
+
+            return true;
         }
 
         private async Task<string> GenerateRefreshTokenAsync(TokenRequest dto)
         {
-            var clientKey = dto.Claims.FirstOrDefault(x => x.Type.Equals(CSharpClaimsIdentity.ClientKeyClaimType))?.Value.ToString();
+            var clientKey = dto.Claims.GetValue(CSharpClaimsIdentity.ClientKeyClaimType);
 
-            var userId = dto.Claims.FirstOrDefault(x => x.Type.Equals(CSharpClaimsIdentity.DefaultNameClaimType))?.Value.ToString();
+            var userId = dto.Claims.GetValue(CSharpClaimsIdentity.DefaultNameClaimType);
 
             var expirationDate = DateTime.UtcNow.Add(dto.RefreshTokenExpiration);
 
-            var json = new RefreshTokenResult(clientKey, userId, expirationDate).ToJson();
+            var guid = GenerateGuid(expirationDate).ToString("n");
 
-            string token = StringCipher.EncryptString(json, StringCipherPassword);
-
-            var refreshToken = await _context
-                .RefreshTokens
-                .SingleOrDefaultAsync(x => x.ClientId == clientKey && x.UserId == userId);
-
-            if (refreshToken != null) _context.RefreshTokens.Remove(refreshToken);
+            string token = $"{clientKey}.{userId}.{guid}";
 
             _context.RefreshTokens.Add(new RefreshToken
             {
                 Id = token,
-                ClientId = clientKey,
+                ClientId = string.IsNullOrEmpty(clientKey) ? null : clientKey,
                 UserId = userId,
                 ExpirationDate = expirationDate,
             });
@@ -113,6 +171,19 @@
 
             return token;
 
+        }
+
+        private Guid GenerateGuid(DateTime time)
+        {
+            var tempGuid = Guid.NewGuid();
+            var bytes = tempGuid.ToByteArray();
+            bytes[3] = (byte)time.Year;
+            bytes[2] = (byte)time.Month;
+            bytes[1] = (byte)time.Day;
+            bytes[0] = (byte)time.Hour;
+            bytes[5] = (byte)time.Minute;
+            bytes[4] = (byte)time.Second;
+            return new Guid(bytes);
         }
     }
 }

@@ -4,21 +4,21 @@
 
     public class UserResult
     {
-        public UserResult() { }
+        public UserResult() => Succeeded = true;
 
         public UserResult(IDictionary<string, object> token)
         {
-            Successed = true;
+            Succeeded = true;
             Token = token;
         }
 
         public UserResult(object error)
         {
-            Successed = false;
+            Succeeded = false;
             Error = error;
         }
 
-        public bool Successed { get; set; }
+        public bool Succeeded { get; set; }
         public IDictionary<string, object> Token { get; set; }
         public object Error { get; set; }
     }
