@@ -1,19 +1,30 @@
-﻿namespace OAuthServer.Controllers
+﻿namespace Client1.Controllers
 {
     using System.Collections.Generic;
+    using CSharpJWT;
     using CSharpJWT.Attributes;
+    using CSharpJWT.Extensions;
     using Microsoft.AspNetCore.Mvc;
 
     [Route("api/[controller]")]
     [ApiController]
-    [CSharpAuthorization]
     public class ValuesController : ControllerBase
     {
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        [CSharpAuthorization(
+          Audiences: new string[] { "https://c-sharp.vn" }
+        , Roles: new string[] { "Administrator", "User" })]
+        public ActionResult<object> Get()
         {
-            return new string[] { "value1", "value2" };
+            return new 
+            {
+                ClientId = User.Claims.GetValue(CSharpClaimsIdentity.ClientIdClaimType),
+                Audience = User.Claims.GetValue(CSharpClaimsIdentity.AudienceClaimType),
+                UserId = User.Claims.GetValue(CSharpClaimsIdentity.DefaultNameClaimType),
+                UserName = User.Claims.GetValue(CSharpClaimsIdentity.UserNameClaimType),
+                Role = User.Claims.GetValue(CSharpClaimsIdentity.DefaultRoleClaimType),
+            };
         }
 
         // GET api/values/5

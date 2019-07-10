@@ -11,6 +11,10 @@
 
         public readonly TokenProviderOptions _options;
 
+        private const string SecretPath = "/oauth/secret.ssh";
+
+        private const string CachePath = "/oauth/cache";
+
         public TokenProviderMiddleware(RequestDelegate next,
             TokenProviderOptions options)
         {
@@ -28,10 +32,34 @@
             {
                 await new RevokeTokenHandle().ExecuteAsync(context);
             }
+            else if (context.Request.Path.Equals(SecretPath, StringComparison.Ordinal))
+            {
+                await DownloadSecretKeyAsync(context);
+            }
+            else if (context.Request.Path.Equals(CachePath, StringComparison.Ordinal))
+            {
+                await new CacheHandler().ExecuteAsync(context);
+            }
             else
             {
                 await _next(context);
             }
+        }
+
+        private async Task DownloadSecretKeyAsync(HttpContext context)
+        {
+            string secretKey = Configuration.SecurityKey;
+
+            if (System.IO.File.Exists(Configuration.PhysicalSecretPath))
+            {
+                secretKey = System.IO.File.ReadAllText(Configuration.PhysicalSecretPath);
+            }
+
+            context.Response.StatusCode = 200;
+
+            context.Response.ContentType = "text/plain";
+
+            await context.Response.WriteAsync(secretKey);
         }
     }
 }

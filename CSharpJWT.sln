@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29020.237
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpJWT", "CSharpJWT\CSharpJWT.csproj", "{B24FCB9A-2237-4DDE-891D-B7635D464091}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSharpJWT", "CSharpJWT\CSharpJWT.csproj", "{B24FCB9A-2237-4DDE-891D-B7635D464091}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OAuthServer", "OAuthServer\OAuthServer.csproj", "{042CDB93-3450-4C1A-A8C4-CB9044F21646}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OAuthServer", "OAuthServer\OAuthServer.csproj", "{042CDB93-3450-4C1A-A8C4-CB9044F21646}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client1", "Client1\Client1.csproj", "{2370CF6C-1E2A-4F17-86DF-F9FE144A9C2C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{042CDB93-3450-4C1A-A8C4-CB9044F21646}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{042CDB93-3450-4C1A-A8C4-CB9044F21646}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{042CDB93-3450-4C1A-A8C4-CB9044F21646}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2370CF6C-1E2A-4F17-86DF-F9FE144A9C2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2370CF6C-1E2A-4F17-86DF-F9FE144A9C2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2370CF6C-1E2A-4F17-86DF-F9FE144A9C2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2370CF6C-1E2A-4F17-86DF-F9FE144A9C2C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

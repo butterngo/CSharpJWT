@@ -43,7 +43,7 @@
 
             ClientResult clientResult = null;
 
-            if (_options.VerifyClient && grantType != GrantTypeEnum.refresh_token)
+            if (_options.ValidateClient && grantType != GrantTypeEnum.refresh_token)
             {
                 clientResult = await VerifyClientAsync(context);
 

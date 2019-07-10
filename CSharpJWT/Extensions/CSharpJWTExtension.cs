@@ -11,12 +11,12 @@
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.IdentityModel.Tokens;
     using System;
+    using System.Net.Http;
     using System.Text;
 
     public static class CSharpJWTExtension
     {
         public static IApplicationBuilder AddJWTMiddleware(this IApplicationBuilder app,
-            IConfiguration configuration,
             string tokenPath = "/CSharp-token",
             string revokePath = "/CSharp-revoke-token",
             int tokenExpiration = 30,
@@ -26,10 +26,9 @@
             {
                 TokenPath = tokenPath,
                 RevokePath = revokePath,
-                Audience = configuration.GetValue<string>("JWTSettings:Audience"),
-                Issuer = configuration.GetValue<string>("JWTSettings:Issuer"),
-                SecurityKey = GetsecretKey(),
-                VerifyClient = configuration.GetValue<bool>("JWTSettings:VerifyClient"),
+                Issuer = Configuration.Issuer,
+                SecurityKey = Configuration.SecurityKey,
+                ValidateClient = Configuration.ValidateClient,
                 TokenExpiration = TimeSpan.FromMinutes(+tokenExpiration),
                 RefreshTokenExpiration = TimeSpan.FromMinutes(+refreshTokenExpiration)
             });
@@ -37,8 +36,7 @@
             return app;
         }
 
-        public static IServiceCollection AddJWTAuthentication(this IServiceCollection services,
-            IConfiguration configuration)
+        public static IServiceCollection AddJWTAuthentication(this IServiceCollection services)
         {
             services.AddAuthentication(options =>
             {
@@ -51,16 +49,15 @@
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
-                    ValidateAudience = true,
+                    ValidateAudience = false,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = configuration.GetValue<string>("JWTSettings:Issuer"),
-                    ValidAudience = configuration.GetValue<string>("JWTSettings:Audience"),
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(GetsecretKey()))
+                    ValidIssuer = Configuration.Issuer,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration.SecurityKey))
                 };
             });
 
-            return services;
+            return services.AddSingleton<ICSharpAuthenticateService, CSharpAuthenticateService>();
         }
 
         public static IServiceCollection AddCSharpIdentity<TContext>(this IServiceCollection services)
@@ -80,19 +77,56 @@
 
             return services;
         }
+    }
 
-        private static string GetsecretKey()
+    public static class CSharpJWTServerConfiguration
+    {
+        public static void Init(IConfiguration configuration)
         {
-            string path = $"{AppContext.BaseDirectory}\\secret.ssh";
+            Configuration.Audience = configuration.GetValue<string>("JWTSettings:Audience");
 
-            string secretKey = Configuration.SecurityKey;
+            Configuration.Issuer = configuration.GetValue<string>("JWTSettings:Issuer");
 
-            if (System.IO.File.Exists(path))
+            Configuration.ValidateClient = configuration.GetValue<bool>("JWTSettings:ValidateClient");
+
+            Configuration.PhysicalSecretPath = configuration.GetValue<string>("JWTSettings:SecretPath");
+
+            if (!System.IO.File.Exists(Configuration.PhysicalSecretPath))
             {
-                secretKey = System.IO.File.ReadAllText($"{AppContext.BaseDirectory}\\secret.ssh");
+                throw new Exception($"Not found this path: {Configuration.PhysicalSecretPath}");
             }
 
-            return secretKey;
+            Configuration.SecurityKey = System.IO.File.ReadAllText(Configuration.PhysicalSecretPath);
+
+        }
+    }
+
+    public static class CSharpJWTClientConfiguration
+    {
+        public static void Init(string issuer)
+        {
+            Configuration.Issuer = issuer;
+
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    client.BaseAddress = new Uri(issuer);
+
+                    client.Timeout = TimeSpan.FromSeconds(5);
+
+                    var response = client.GetAsync("/oauth/secret.ssh").Result;
+
+                    response.EnsureSuccessStatusCode();
+
+                    Configuration.SecurityKey = response.Content.ReadAsStringAsync().Result;
+                }
+                catch
+                {
+                    throw new Exception($"Not found oauth server with host {Configuration.Issuer}");
+                }
+            }
+
         }
     }
 }

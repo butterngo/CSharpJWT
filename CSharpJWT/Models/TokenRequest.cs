@@ -14,7 +14,6 @@
         public TokenRequest(TokenProviderOptions options, List<Claim> claims)
         {
             Issuer = options.Issuer;
-            Audience = options.Audience;
             Claims = claims;
             TokenExpiration = options.TokenExpiration;
             RefreshTokenExpiration = options.RefreshTokenExpiration;

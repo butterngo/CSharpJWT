@@ -8,3 +8,5 @@
 /.vs/CSharpJWT/v16/Server/sqlite3/storage.ide-shm
 /.vs/CSharpJWT/v16/Server/sqlite3/storage.ide-wal
 /.vs/CSharpJWT/DesignTimeBuild/*.dtbcache
+/Client1/bin
+/Client1/obj

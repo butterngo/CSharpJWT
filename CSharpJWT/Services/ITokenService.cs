@@ -12,10 +12,6 @@
 
         Task<RefreshTokenResult> VerifyRefreshTokenAsync(string token);
 
-        Task<bool> IsValidTokenAsync(HttpContext context);
-
-        bool IsValidToken(HttpContext context);
-
         Task<bool> RevokeTokenAsync(AuthenticateResult authenticateResult);
 
     }

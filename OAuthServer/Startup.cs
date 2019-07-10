@@ -30,7 +30,9 @@
 
             services.AddCSharpIdentity<CSharpJWTContext>();
 
-            services.AddJWTAuthentication(Configuration);
+            CSharpJWTServerConfiguration.Init(Configuration);
+
+            services.AddJWTAuthentication();
 
             services.AddTransient<SeedData>();
 
@@ -44,7 +46,11 @@
 
             seedData.SeedClient();
 
-            app.AddJWTMiddleware(Configuration);
+            seedData.SeedRole();
+
+            seedData.SeedUserRole();
+
+            app.AddJWTMiddleware();
 
             app.UseAuthentication();
 

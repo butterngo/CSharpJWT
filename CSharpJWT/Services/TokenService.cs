@@ -95,38 +95,6 @@
             return new RefreshTokenResult(refreshToken.ClientId, refreshToken.UserId);
         }
 
-        public async Task<bool> IsValidTokenAsync(HttpContext context)
-        {
-            try
-            {
-                var cacheKey = context.User.Claims.GetValue(CSharpClaimsIdentity.CacheKeyClaimType);
-
-                var headers = context.Request.Headers["Authorization"];
-
-                var token = headers.ToString().Split(' ')[1];
-
-                var tokenInformation = await _cache.GetAsync(cacheKey);
-
-                if (tokenInformation == null) return false;
-
-                if (!tokenInformation.Token.Equals(token)) return false;
-
-                if (tokenInformation.ExpirationDate <= DateTime.UtcNow) return false;
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-
-        }
-
-        public bool IsValidToken(HttpContext context)
-        {
-            return IsValidTokenAsync(context).Result;
-        }
-
         public async Task<bool> RevokeTokenAsync(AuthenticateResult authenticateResult)
         {
             var cacheKey = authenticateResult.Principal.Claims.GetValue(CSharpClaimsIdentity.CacheKeyClaimType);
@@ -185,5 +153,6 @@
             bytes[4] = (byte)time.Second;
             return new Guid(bytes);
         }
+
     }
 }
