@@ -16,4 +16,5 @@ The library helps you manage users, tenants. Besides, managing the lifetime of "
 2. Created DistCache through command "dotnet sql-cache create "Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=DistCache;Integrated Security=True;" dbo TestCache".
 **Remind**: Make sure your machine was installed [dotnet sql-cache](https://www.nuget.org/packages/dotnet-sql-cache/).
 3. Open terminal or command line and execute [update-database](https://docs.microsoft.com/en-us/ef/ef6/modeling/code-first/workflows/new-database) 
-
+# Note:
+If you want to get more understanding about that, please access to website [c-sharp.vn](https://www.c-sharp.vn/).
