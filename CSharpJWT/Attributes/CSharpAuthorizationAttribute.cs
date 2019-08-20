@@ -1,14 +1,12 @@
 ﻿namespace CSharpJWT.Attributes
 {
     using CSharpJWT.Services;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Filters;
     using System.Linq;
 
     public class CSharpAuthorizationAttribute : TypeFilterAttribute
     {
-
         public CSharpAuthorizationAttribute(string[] Audiences = null, string[] Roles = null)
             : base(typeof(CSharpAuthorizationFilter))
         {

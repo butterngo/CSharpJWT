@@ -21,9 +21,9 @@
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            CSharpJWTClientConfiguration.Init(issuer:"http://localhost:5000");
+            //CSharpJWTClientConfiguration.Init(issuer:"http://localhost:5000");
 
-            services.AddJWTAuthentication();
+            //services.AddJWTAuthentication();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

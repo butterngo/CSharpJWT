@@ -50,10 +50,10 @@
         {
             string secretKey = Configuration.SecurityKey;
 
-            if (System.IO.File.Exists(Configuration.PhysicalSecretPath))
-            {
-                secretKey = System.IO.File.ReadAllText(Configuration.PhysicalSecretPath);
-            }
+            //if (System.IO.File.Exists(Configuration.PhysicalSecretPath))
+            //{
+            //    secretKey = System.IO.File.ReadAllText(Configuration.PhysicalSecretPath);
+            //}
 
             context.Response.StatusCode = 200;
 

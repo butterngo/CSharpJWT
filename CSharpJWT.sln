@@ -3,11 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29020.237
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSharpJWT", "CSharpJWT\CSharpJWT.csproj", "{B24FCB9A-2237-4DDE-891D-B7635D464091}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client1", "Client1\Client1.csproj", "{A79A3DCE-0F00-4725-8BA2-6AB6BEA25ED5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OAuthServer", "OAuthServer\OAuthServer.csproj", "{042CDB93-3450-4C1A-A8C4-CB9044F21646}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSharpJWT", "CSharpJWT\CSharpJWT.csproj", "{75D5F250-0ABF-4211-BADE-26AA3C57460C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client1", "Client1\Client1.csproj", "{2370CF6C-1E2A-4F17-86DF-F9FE144A9C2C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OAuthServer", "OAuthServer\OAuthServer.csproj", "{B4363946-0EE0-40F0-92E1-80860A3B9183}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{25D9B176-14BA-4902-949F-EDC94A144EE6}"
+	ProjectSection(SolutionItems) = preProject
+		deployment.yaml = deployment.yaml
+		docker-compose.override.yml = docker-compose.override.yml
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,18 +22,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B24FCB9A-2237-4DDE-891D-B7635D464091}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B24FCB9A-2237-4DDE-891D-B7635D464091}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B24FCB9A-2237-4DDE-891D-B7635D464091}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B24FCB9A-2237-4DDE-891D-B7635D464091}.Release|Any CPU.Build.0 = Release|Any CPU
-		{042CDB93-3450-4C1A-A8C4-CB9044F21646}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{042CDB93-3450-4C1A-A8C4-CB9044F21646}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{042CDB93-3450-4C1A-A8C4-CB9044F21646}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{042CDB93-3450-4C1A-A8C4-CB9044F21646}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2370CF6C-1E2A-4F17-86DF-F9FE144A9C2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2370CF6C-1E2A-4F17-86DF-F9FE144A9C2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2370CF6C-1E2A-4F17-86DF-F9FE144A9C2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2370CF6C-1E2A-4F17-86DF-F9FE144A9C2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A79A3DCE-0F00-4725-8BA2-6AB6BEA25ED5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A79A3DCE-0F00-4725-8BA2-6AB6BEA25ED5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A79A3DCE-0F00-4725-8BA2-6AB6BEA25ED5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A79A3DCE-0F00-4725-8BA2-6AB6BEA25ED5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75D5F250-0ABF-4211-BADE-26AA3C57460C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75D5F250-0ABF-4211-BADE-26AA3C57460C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75D5F250-0ABF-4211-BADE-26AA3C57460C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75D5F250-0ABF-4211-BADE-26AA3C57460C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4363946-0EE0-40F0-92E1-80860A3B9183}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4363946-0EE0-40F0-92E1-80860A3B9183}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4363946-0EE0-40F0-92E1-80860A3B9183}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4363946-0EE0-40F0-92E1-80860A3B9183}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

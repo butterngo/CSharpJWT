@@ -1,0 +1,37 @@
+apiVersion: apps/v1 
+kind: Deployment 
+metadata: 
+  name: client1-deployment 
+  labels:
+    app: client1 
+spec: 
+  selector: 
+    matchLabels: 
+      app: client1 
+  replicas: 1 
+  template: 
+    metadata: 
+      labels: 
+        app: client1 
+    spec: 
+      containers: 
+      - name: client1 
+        image: butterngo8050/client1:latest
+        ports: 
+        - containerPort: 5001
+--- 
+# Create Service for kubernetes
+kind: Service 
+apiVersion: v1 
+metadata: 
+  name: client1-service 
+spec: 
+  type: LoadBalancer
+  selector: 
+    app: client1 
+  ports: 
+  - protocol: TCP 
+    port: 80 
+    targetPort: 5001 
+    nodePort: 31000 
+  type: NodePort 

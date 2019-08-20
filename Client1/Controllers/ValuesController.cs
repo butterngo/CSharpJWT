@@ -1,6 +1,5 @@
 ﻿namespace Client1.Controllers
 {
-    using System.Collections.Generic;
     using CSharpJWT;
     using CSharpJWT.Attributes;
     using CSharpJWT.Extensions;
@@ -17,7 +16,7 @@
         , Roles: new string[] { "Administrator", "User" })]
         public ActionResult<object> Get()
         {
-            return new 
+            return new
             {
                 ClientId = User.Claims.GetValue(CSharpClaimsIdentity.ClientIdClaimType),
                 Audience = User.Claims.GetValue(CSharpClaimsIdentity.AudienceClaimType),
@@ -28,10 +27,10 @@
         }
 
         // GET api/values/5
-        [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        [HttpGet("test")]
+        public ActionResult<string> Test()
         {
-            return "value";
+            return "value Test";
         }
 
         // POST api/values

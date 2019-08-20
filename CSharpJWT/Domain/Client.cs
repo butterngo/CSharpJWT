@@ -16,7 +16,7 @@
         public string ClientName { get; set; }
         public string ClientUri { get; set; }
         public bool Enabled { get; set; }
-        public string Secret { get; set; } = "CSharpJWT";
+        public string Secret { get; set; }
         public DateTime CreatedDate { get; set; }
     }
 }

@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  #oauthserver:
+    #environment:
+      #- DOCKER_REGISTRY=butterngo8050
+      #- ASPNETCORE_ENVIRONMENT=Development
+    #ports:
+    #  - "80"
+  client1:
+  #  environment:
+    #   - DOCKER_REGISTRY=butterngo8050
+    #  - ASPNETCORE_ENVIRONMENT=Development
+    #ports:
+    #  - "80"

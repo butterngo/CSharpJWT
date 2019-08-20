@@ -6,7 +6,7 @@
 
     [Route("api/[controller]")]
     [ApiController]
-    [CSharpAuthorization]
+    //[CSharpAuthorization]
     public class ValuesController : ControllerBase
     {
         // GET api/values

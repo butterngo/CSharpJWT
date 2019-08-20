@@ -10,9 +10,11 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.IdentityModel.Tokens;
+    using Polly;
     using System;
     using System.Net.Http;
     using System.Text;
+    using System.Threading.Tasks;
 
     public static class CSharpJWTExtension
     {
@@ -89,14 +91,14 @@
 
             Configuration.ValidateClient = configuration.GetValue<bool>("JWTSettings:ValidateClient");
 
-            Configuration.PhysicalSecretPath = configuration.GetValue<string>("JWTSettings:SecretPath");
+            //Configuration.PhysicalSecretPath = $"{AppDomain.CurrentDomain.BaseDirectory}//{configuration.GetValue<string>("JWTSettings:SecretPath")}";
 
-            if (!System.IO.File.Exists(Configuration.PhysicalSecretPath))
-            {
-                throw new Exception($"Not found this path: {Configuration.PhysicalSecretPath}");
-            }
+            //if (!System.IO.File.Exists(Configuration.PhysicalSecretPath))
+            //{
+            //    throw new Exception($"Not found this path: {Configuration.PhysicalSecretPath}");
+            //}
 
-            Configuration.SecurityKey = System.IO.File.ReadAllText(Configuration.PhysicalSecretPath);
+            Configuration.SecurityKey = "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQBfjJRNnuKWed3Yyy+AHYwtx0o0cK4wnKSM3TQ5r5Fv5PMt3ZUndwinlagR5IvFYT2ybUfj+WKAwSNf2rHGDsqKE7P3h/Au7BvVLH+uBgYwQ42vAVDudwbNMt6uLDBzciGjYJS09Y7KVhb7gWxAPvPdLdgf4ctOXCXlnyeR+wv1iSYuQC4oRJeIMXemf5RQ0bvxK1Voez1HKuS46iCw+1DvNo8MePX/lVp46cJqkqH8SlxLWh+sg/AgQKNjhIyZfjIWbn7kOpyiuegc7/SXowRrBX2/nibkTKMbcNICR7azefJGtC9aJ3JtMULnO9TzqXIUkPZAuvM9YcItFVEp9BBl rsa-key-20190708";
 
         }
     }
@@ -105,28 +107,47 @@
     {
         public static void Init(string issuer)
         {
+
             Configuration.Issuer = issuer;
 
-            using (var client = new HttpClient())
+            var policy = Policy.Handle<Exception>()
+                                 .WaitAndRetry(5,
+                                               retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                                               (ex, time) =>
+                                               {
+                                                     //TODO
+                                               });
+
+            policy.Execute(() =>
             {
-                try
+                using (var client = GetSecret())
                 {
-                    client.BaseAddress = new Uri(issuer);
+                    try
+                    {
+                        var response = client.Result;
 
-                    client.Timeout = TimeSpan.FromSeconds(5);
-
-                    var response = client.GetAsync("/oauth/secret.ssh").Result;
-
-                    response.EnsureSuccessStatusCode();
-
-                    Configuration.SecurityKey = response.Content.ReadAsStringAsync().Result;
+                        response.EnsureSuccessStatusCode();
+                        Configuration.SecurityKey = response.Content.ReadAsStringAsync().Result;
+                    }
+                    catch
+                    {
+                        throw new Exception($"Not found oauth server with host {Configuration.Issuer}");
+                    }
                 }
-                catch
-                {
-                    throw new Exception($"Not found oauth server with host {Configuration.Issuer}");
-                }
-            }
+            });
 
+        }
+
+        private static Task<HttpResponseMessage> GetSecret()
+        {
+            var client = new HttpClient();
+
+            client.BaseAddress = new Uri("http://192.168.77.100:5000");
+
+            client.Timeout = TimeSpan.FromSeconds(5);
+
+            return client.GetAsync("/oauth/secret.ssh");
+           
         }
     }
 }

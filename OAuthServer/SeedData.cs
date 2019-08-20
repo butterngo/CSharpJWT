@@ -133,5 +133,24 @@
             }
            
         }
+
+        public void SeedUserClient()
+        {
+            var client = _context.Clients.SingleOrDefault(x => x.ClientId.Equals("www.c-sharp.vn"));
+
+            var user = _context.Users.ToList()[0];
+
+            _context.UserClients.Add(new UserClient { UserId = user.Id, ClientId = client.Id });
+
+            _context.SaveChanges();
+
+            client = _context.Clients.SingleOrDefault(x => x.ClientId.Equals("www.client1.localhost"));
+
+            user = _context.Users.ToList()[1];
+
+            _context.UserClients.Add(new UserClient { UserId = user.Id, ClientId = client.Id });
+
+            _context.SaveChanges();
+        }
     }
 }

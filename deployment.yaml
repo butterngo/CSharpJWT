@@ -1,0 +1,39 @@
+apiVersion: apps/v1 
+kind: Deployment 
+metadata: 
+  name: client1-deployment 
+  labels:
+    app: client1 
+spec: 
+  selector: 
+    matchLabels: 
+      app: client1 
+  replicas: 1 
+  template: 
+    metadata: 
+      labels: 
+        app: client1 
+    spec: 
+      containers: 
+      - name: client1 
+        image: localhost:5000/client1:latest
+        ports: 
+        - containerPort: 5001
+      imagePullSecrets: 
+      - name: default-token-c9m7p
+--- 
+# Create Service for kubernetes
+kind: Service 
+apiVersion: v1 
+metadata: 
+  name: client1-service 
+spec: 
+  type: LoadBalancer
+  selector: 
+    app: client1 
+  ports: 
+  - protocol: TCP 
+    port: 80 
+    targetPort: 5001 
+    nodePort: 31000 
+  type: NodePort 

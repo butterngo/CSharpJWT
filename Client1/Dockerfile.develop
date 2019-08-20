@@ -1,0 +1,18 @@
+FROM mcr.microsoft.com/dotnet/core/sdk:2.2
+ARG BUILD_CONFIGURATION=Debug
+ENV ASPNETCORE_ENVIRONMENT=Development
+ENV DOTNET_USE_POLLING_FILE_WATCHER=true
+EXPOSE 80
+
+WORKDIR /src
+COPY ["Client1/Client1.csproj", "Client1/"]
+COPY ["CSharpJWT/CSharpJWT.csproj", "CSharpJWT/"]
+
+RUN dotnet restore "Client1/Client1.csproj"
+COPY . .
+WORKDIR "/src/Client1"
+RUN dotnet build --no-restore "Client1.csproj" -c $BUILD_CONFIGURATION
+
+RUN echo "exec dotnet run --no-build --no-launch-profile -c $BUILD_CONFIGURATION --" > /entrypoint.sh
+
+ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
