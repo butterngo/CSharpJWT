@@ -25,26 +25,27 @@
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            //services.AddDbContext<CSharpJWTContext>(options => options.UseInMemoryDatabase("CSharpJWT"));
+            services.AddDbContext<CSharpJWTContext>(options => options.UseInMemoryDatabase("CSharpJWT"));
+
+            services.AddCSharpJWTDistributedMemoryCache();
 
             services.AddCSharpJWTIdentity<CSharpJWTContext>();
-
-            services.AddDbContext<CSharpJWTContext>(options =>
-               options.UseSqlServer(Configuration.GetConnectionString("CSharpJWTDB"),
-               sql => sql.MigrationsAssembly("OAuthServer")));
 
             services.AddCSharpJWTAuthentication();
 
             services.AddTransient<SeedData>();
 
-            services.AddCSharpJWTDistributedSqlServerCache(options =>
-            {
-                options.ConnectionString = Configuration.GetConnectionString("DistCache_ConnectionString");
-                options.SchemaName = "dbo";
-                options.TableName = "TestCache";
-            });
+            //services.AddDbContext<CSharpJWTContext>(options =>
+            //   options.UseSqlServer(Configuration.GetConnectionString("CSharpJWTDB"),
+            //   sql => sql.MigrationsAssembly("OAuthServer")));
 
-            //services.AddCSharpJWTDistributedMemoryCache();
+            //services.AddCSharpJWTDistributedSqlServerCache(options =>
+            //{
+            //    options.ConnectionString = Configuration.GetConnectionString("DistCache_ConnectionString");
+            //    options.SchemaName = "dbo";
+            //    options.TableName = "TestCache";
+            //});
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
