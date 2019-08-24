@@ -10,3 +10,15 @@
 /.vs/CSharpJWT/DesignTimeBuild/*.dtbcache
 /Client1/bin
 /Client1/obj
+/nuget
+/Nuget.bat
+/sample/Client1/obj
+/sample/Client1/bin
+/sample/OAuthServer/obj
+/sample/OAuthServer/bin
+/src/CSharpJWT/obj
+/src/CSharpJWT/bin
+/src/CSharpJWT.Client/obj
+/src/CSharpJWT.Client/bin
+/sample/Client1/Properties/PublishProfiles/FolderProfile.pubxml
+/sample/Client1/Properties/PublishProfiles/FolderProfile.pubxml.user
