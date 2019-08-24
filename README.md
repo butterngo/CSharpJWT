@@ -1,5 +1,6 @@
 # Description:
 The library helps you manage users, tenants. Besides, managing the lifetime of "access_token and refresh_token, revoke "access_token", sharing token between applications. Support "Authorization" attribute easily to validate "Audiences, Issuer, Roles...".
+[Nuget](https://www.nuget.org/packages/CSharp.JWT/)
 
 # Configuration:
 1. Generate Secret key you can use [putty](https://www.putty.org/) to do that or any application you knew.
@@ -17,4 +18,4 @@ The library helps you manage users, tenants. Besides, managing the lifetime of "
 **Remind**: Make sure your machine was installed [dotnet sql-cache](https://www.nuget.org/packages/dotnet-sql-cache/).
 3. Open terminal or command line and execute [update-database](https://docs.microsoft.com/en-us/ef/ef6/modeling/code-first/workflows/new-database) 
 # Note:
-If you want to get more understanding about that, you can access  the website [c-sharp.vn](https://www.c-sharp.vn/).
+If you want to get more understanding about that, you can access  the website [c-sharp.vn](https://www.c-sharp.vn/dot-net-core/multi-tenancy-with-full-stack-jwt-part-1-7c1083).
