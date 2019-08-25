@@ -7,9 +7,9 @@
 
     internal static class Configuration
     {
-        public static string TokenPath { get; set; } = "/CSharp-token";
+        public static string TokenPath { get; set; } = "/csharp-token";
 
-        public static string RevokePath { get; set; } = "/CSharp-revoke-token";
+        public static string RevokePath { get; set; } = "/csharp-revoke-token";
 
         public static string SecurityKey { get; set; }
 

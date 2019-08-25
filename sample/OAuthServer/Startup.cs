@@ -25,19 +25,15 @@
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.AddDbContext<CSharpJWTContext>(options => options.UseInMemoryDatabase("CSharpJWT"));
+            //services.AddCSharpJWTIdentity<CSharpJWTContext>(options =>
+            //   options.UseSqlServer(Configuration.GetConnectionString("CSharpJWTDB"),
+            //   sql => sql.MigrationsAssembly("OAuthServer")));
+
+            services.AddCSharpJWTIdentity<CSharpJWTContext>(options => options.UseInMemoryDatabase("CSharpJWT"));
 
             services.AddCSharpJWTDistributedMemoryCache();
 
-            services.AddCSharpJWTIdentity<CSharpJWTContext>();
-
             services.AddCSharpJWTAuthentication();
-
-            services.AddTransient<SeedData>();
-
-            //services.AddDbContext<CSharpJWTContext>(options =>
-            //   options.UseSqlServer(Configuration.GetConnectionString("CSharpJWTDB"),
-            //   sql => sql.MigrationsAssembly("OAuthServer")));
 
             //services.AddCSharpJWTDistributedSqlServerCache(options =>
             //{
@@ -45,6 +41,8 @@
             //    options.SchemaName = "dbo";
             //    options.TableName = "TestCache";
             //});
+
+            services.AddTransient<SeedData>();
 
         }
 

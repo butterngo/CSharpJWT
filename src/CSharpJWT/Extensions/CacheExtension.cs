@@ -1,17 +1,21 @@
 ﻿namespace CSharpJWT.Extensions
 {
     using CSharpJWT.Internal.Caches;
+    using Microsoft.Extensions.Caching.Memory;
     using Microsoft.Extensions.Caching.SqlServer;
-    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using System;
 
     public static class CacheExtension
     {
-        public static IServiceCollection AddCSharpJWTDistributedMemoryCache(this IServiceCollection services)
+        public static IServiceCollection AddCSharpJWTDistributedMemoryCache(this IServiceCollection services,
+            Action<MemoryDistributedCacheOptions> setupAction = null)
         {
+            if(setupAction == null) services.AddDistributedMemoryCache();
+
+            else services.AddDistributedMemoryCache(setupAction);
+
             return services
-                .AddDistributedMemoryCache()
                 .AddSingleton<JWTTokenDistributedCache>();
         }
 

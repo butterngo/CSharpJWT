@@ -5,11 +5,11 @@
     using Microsoft.AspNetCore.Mvc.Filters;
     using System.Linq;
 
-    public class CSharpAuthorizationAttribute : TypeFilterAttribute
+    public class CSharpAuthorizeAttribute : TypeFilterAttribute
     {
 
-        public CSharpAuthorizationAttribute(string[] Audiences = null, string[] Roles = null)
-            : base(typeof(CSharpAuthorizationFilter))
+        public CSharpAuthorizeAttribute(string[] Audiences = null, string[] Roles = null)
+            : base(typeof(CSharpAuthorizeFilter))
         {
             Audiences = Audiences == null ? new string[] { } : Audiences;
 
@@ -19,13 +19,13 @@
         }
     }
 
-    public class CSharpAuthorizationFilter : IAuthorizationFilter
+    public class CSharpAuthorizeFilter : IAuthorizationFilter
     {
         private readonly string[] _audiences;
 
         private readonly string[] _roles;
 
-        public CSharpAuthorizationFilter(string[] audiences, string[] roles)
+        public CSharpAuthorizeFilter(string[] audiences, string[] roles)
         {
             _audiences = audiences;
 
