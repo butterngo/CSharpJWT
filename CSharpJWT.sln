@@ -5,15 +5,19 @@ VisualStudioVersion = 16.0.29020.237
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3F96F2C6-181C-4D1F-93C9-0FEFA292368C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{11B533BA-DF75-4B47-81D0-FA091AB71A23}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{11B533BA-DF75-4B47-81D0-FA091AB71A23}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSharpJWT", "src\CSharpJWT\CSharpJWT.csproj", "{9520D4E0-FF3E-478B-96DC-155ED7B2BAD7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client1", "sample\Client1\Client1.csproj", "{428F3038-5341-4E5B-B02E-1D868880EB59}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OAuthServer", "sample\OAuthServer\OAuthServer.csproj", "{F6A0BD18-AD36-405A-A85B-9CD0FF555C60}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSharpJWT.Client", "src\CSharpJWT.Client\CSharpJWT.Client.csproj", "{064283B1-3363-486E-87E1-FA2420BE6DD3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpJWT.Client", "src\CSharpJWT.Client\CSharpJWT.Client.csproj", "{064283B1-3363-486E-87E1-FA2420BE6DD3}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker-compose", "docker-compose", "{C30CB339-A3BB-44BE-8B0F-CEE6EB91533E}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose\.env = docker-compose\.env
+		docker-compose.yaml = docker-compose.yaml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +33,6 @@ Global
 		{428F3038-5341-4E5B-B02E-1D868880EB59}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{428F3038-5341-4E5B-B02E-1D868880EB59}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{428F3038-5341-4E5B-B02E-1D868880EB59}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F6A0BD18-AD36-405A-A85B-9CD0FF555C60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F6A0BD18-AD36-405A-A85B-9CD0FF555C60}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F6A0BD18-AD36-405A-A85B-9CD0FF555C60}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F6A0BD18-AD36-405A-A85B-9CD0FF555C60}.Release|Any CPU.Build.0 = Release|Any CPU
 		{064283B1-3363-486E-87E1-FA2420BE6DD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{064283B1-3363-486E-87E1-FA2420BE6DD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{064283B1-3363-486E-87E1-FA2420BE6DD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -44,7 +44,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{9520D4E0-FF3E-478B-96DC-155ED7B2BAD7} = {3F96F2C6-181C-4D1F-93C9-0FEFA292368C}
 		{428F3038-5341-4E5B-B02E-1D868880EB59} = {11B533BA-DF75-4B47-81D0-FA091AB71A23}
-		{F6A0BD18-AD36-405A-A85B-9CD0FF555C60} = {11B533BA-DF75-4B47-81D0-FA091AB71A23}
 		{064283B1-3363-486E-87E1-FA2420BE6DD3} = {3F96F2C6-181C-4D1F-93C9-0FEFA292368C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

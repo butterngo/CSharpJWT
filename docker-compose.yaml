@@ -1,0 +1,18 @@
+version: "3.7"
+
+services:
+  oauthserver:
+    image: oauthserver
+    build:
+      context: .
+      dockerfile: ./samples/OAuthServer/Dockerfile
+    ports:
+      - "8050:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    name: mynetwork-network

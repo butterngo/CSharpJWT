@@ -22,3 +22,7 @@
 /src/CSharpJWT.Client/bin
 /sample/Client1/Properties/PublishProfiles/FolderProfile.pubxml
 /sample/Client1/Properties/PublishProfiles/FolderProfile.pubxml.user
+/samples/OAuthServer/obj
+/samples/OAuthServer/bin
+/samples/Client1/obj
+/samples/Client1/bin
