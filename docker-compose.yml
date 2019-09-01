@@ -1,34 +1,20 @@
 version: '3.4'
 
 services:
-  #sql-data:
-  #  image: microsoft/mssql-server-linux:2017-latest
-  #  posts:
-  #   - "1433:1433"
-  #neo4jTest:
-  #  image: neo4j
-  #  ports:
-  #    - 7474:7474
-  #    - 7687:7687
-  #  volumes:
-  #    - ./hobbygraph-data:/data
-  #    - ./plugins:/plugins
-  #  restart: unless-stopped
-    
-  #oauthserver:
-  #  image: ${DOCKER_REGISTRY}/oauthserver
-  #  build:
-  #    context: .
-  #    dockerfile: OAuthServer/Dockerfile
-  #  ports:
-  #    - "5000:5000"
-
-  client1:
-    image: localhost:5000/client1
+  oauthserver:
+    image: oauthserver
     build:
       context: .
-      dockerfile: Client1/Dockerfile
+      dockerfile: OAuthServer/Dockerfile
     ports:
-     - "5001:5001"
+      - "5000:5000"
+
+  #client1:
+    #image: localhost:5000/client1
+    #build:
+      #context: .
+      #dockerfile: Client1/Dockerfile
+    #ports:
+     #- "5001:5001"
   #  depends_on:
   #    - oauthserver

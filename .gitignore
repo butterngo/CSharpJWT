@@ -50,3 +50,11 @@
 /hobbygraph-data/dbms/auth
 /Client1/Properties/PublishProfiles/FolderProfile.pubxml
 /Client1/Properties/PublishProfiles/FolderProfile.pubxml.user
+/samples/Client1/obj
+/samples/Client1/bin
+/samples/OAuthServer/obj
+/samples/OAuthServer/bin
+/src/CSharpJWT/obj
+/src/CSharpJWT/bin
+/src/CSharpJWT.Client/obj
+/src/CSharpJWT.Client/bin
