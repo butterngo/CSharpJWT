@@ -26,5 +26,12 @@
 
             return services;
         }
+
+        public static IServiceCollection AddClaimService(this IServiceCollection services)
+        {
+            services.AddScoped<IClaimService, ClaimService>();
+
+            return services;
+        }
     }
 }

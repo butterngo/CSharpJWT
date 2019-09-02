@@ -1,7 +1,7 @@
 ﻿namespace OAuthServer.Controllers
 {
     using System.Collections.Generic;
-    using CSharpJWT.Attributes;
+    using CSharpJWT.Authentication;
     using Microsoft.AspNetCore.Mvc;
 
     [Route("api/[controller]")]

@@ -1,0 +1,12 @@
+﻿{
+  
+  "profiles": {
+    "Client2": {
+      "commandName": "Project",
+      "applicationUrl": "http://localhost:5002",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

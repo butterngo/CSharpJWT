@@ -24,8 +24,7 @@
         public void SeedUser()
         {
 
-
-            if (!_context.Users.Any())
+            if (!_context.Users.Any(x=>x.UserName.Equals("admin")))
             {
                 var user = new User { UserName = "admin" };
 
@@ -38,25 +37,57 @@
                 _context.SaveChanges();
             }
 
-            var user1 = _context.Users.FirstOrDefault();
+            if (!_context.Users.Any(x => x.UserName.Equals("client1")))
+            {
+                var user = new User { UserName = "client1" };
 
-            Console.WriteLine($"Username: {user1.UserName}");
+                user.PasswordHash = _passwordHasher.HashPassword(user, "123456");
+
+                user.NormalizedUserName = user.UserName;
+
+                _context.Users.Add(user);
+
+                _context.SaveChanges();
+            }
+
+            if (!_context.Users.Any(x => x.UserName.Equals("client2")))
+            {
+                var user = new User { UserName = "client2" };
+
+                user.PasswordHash = _passwordHasher.HashPassword(user, "123456");
+
+                user.NormalizedUserName = user.UserName;
+
+                _context.Users.Add(user);
+
+                _context.SaveChanges();
+            }
         }
 
         public void SeedClient()
         {
+            SeedScope();
+
             var clientId = "www.c-sharp.vn";
 
             if (!_context.Clients.Any(x => x.ClientId.Equals(clientId)))
             {
-                _context.Clients.Add(new Client
+                var client = new Client
                 {
                     ClientId = clientId,
                     ClientName = "c-sharp",
                     ClientUri = "https://c-sharp.vn",
                     Enabled = true,
-                    Secret  = "CSharpJWT"
-                });
+                    Secret = "CSharpJWT"
+                };
+
+                _context.Clients.Add(client);
+
+                _context.ClientScopes.AddRange(_context.Scopes.Select(x => new ClientScope
+                {
+                    ClientId = client.Id,
+                    ScopeId = x.Id
+                }));
 
                 _context.SaveChanges();
             }
@@ -65,14 +96,22 @@
 
             if (!_context.Clients.Any(x => x.ClientId.Equals(clientId)))
             {
-                _context.Clients.Add(new Client
+                var client = new Client
                 {
                     ClientId = clientId,
                     ClientName = "client 1",
                     ClientUri = "http://localhost:5001",
                     Enabled = true,
                     Secret = "client1_CSharpJWT"
-                });
+                };
+
+                _context.Clients.Add(client);
+
+                _context.ClientScopes.AddRange(_context.Scopes.Where(x => !x.Name.Equals("oauthserver")).Select(x => new ClientScope
+                {
+                    ClientId = client.Id,
+                    ScopeId = x.Id
+                }));
 
                 _context.SaveChanges();
             }
@@ -81,17 +120,56 @@
 
             if (!_context.Clients.Any(x => x.ClientId.Equals(clientId)))
             {
-                _context.Clients.Add(new Client
+                var client = new Client
                 {
                     ClientId = clientId,
                     ClientName = "client 2",
                     ClientUri = "http://localhost:5002",
                     Enabled = true,
                     Secret = "client2_CSharpJWT"
-                });
+                };
+
+                _context.Clients.Add(client);
+
+                _context.ClientScopes.AddRange(_context.Scopes.Where(x => x.Name.Equals("client2")).Select(x => new ClientScope
+                {
+                    ClientId = client.Id,
+                    ScopeId = x.Id
+                }));
 
                 _context.SaveChanges();
             }
+        }
+
+        public void SeedScope()
+        {
+            if (!_context.Scopes.Any(x => x.Name.Equals("oauthserver")))
+            {
+                _context.Scopes.Add(new Scope("oauthserver"));
+            }
+
+            if (!_context.Scopes.Any(x => x.Name.Equals("client1")))
+            {
+                _context.Scopes.Add(new Scope("client1"));
+            }
+
+            if (!_context.Scopes.Any(x => x.Name.Equals("client2")))
+            {
+                _context.Scopes.Add(new Scope("client2"));
+            }
+
+            _context.SaveChanges();
+        }
+
+        public void SeedUserClient()
+        {
+            var user = _context.Users.FirstOrDefault(x => x.UserName.Equals("admin"));
+
+            var client = _context.Clients.FirstOrDefault(x => x.ClientId.Equals("www.c-sharp.vn"));
+
+            _context.UserClients.Add(new UserClient { UserId = user.Id, ClientId = client.Id });
+
+            _context.SaveChanges();
         }
 
         public void SeedRole()

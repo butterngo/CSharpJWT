@@ -9,6 +9,8 @@
     {
         Task<Client> FindByClientIdAsync(string clientId);
 
+        Task<Client> FindByIdAsync(string id);
+
         Task<ClientResult> VerifyClientAsync(HttpContext context);
 
         Task<string> GetSecretKeyByClientIdAsync(string clientId);

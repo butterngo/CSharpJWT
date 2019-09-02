@@ -1,7 +1,7 @@
 ﻿namespace CSharpJWT.Middleware
 {
     using CSharpJWT.Internal.Caches;
-    using CSharpJWT.Extensions;
+    using CSharpJWT.Common.Utilities;
     using Microsoft.AspNetCore.Http;
     using System.Threading.Tasks;
 

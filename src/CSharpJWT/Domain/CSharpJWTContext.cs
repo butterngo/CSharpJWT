@@ -15,5 +15,9 @@
         public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
 
         public virtual DbSet<UserClient> UserClients { get; set; }
+
+        public virtual DbSet<Scope> Scopes { get; set; }
+
+        public virtual DbSet<ClientScope> ClientScopes { get; set; }
     }
 }

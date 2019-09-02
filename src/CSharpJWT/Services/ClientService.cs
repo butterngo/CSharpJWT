@@ -19,11 +19,10 @@
         }
 
         public async Task<Client> FindByClientIdAsync(string clientId)
-        {
-            var client = await Clients.FirstOrDefaultAsync(x => x.ClientId.Equals(clientId));
+        => await Clients.FirstOrDefaultAsync(x => x.ClientId.Equals(clientId));
 
-            return client;
-        }
+        public async Task<Client> FindByIdAsync(string id)
+        => await Clients.FirstOrDefaultAsync(x => x.Id.Equals(id));
 
         public async Task<ClientResult> VerifyClientAsync(HttpContext context)
         {

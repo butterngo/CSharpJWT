@@ -1,6 +1,6 @@
 ﻿namespace CSharpJWT.Middleware
 {
-    using CSharpJWT.Extensions;
+    using CSharpJWT.Common.Utilities;
     using CSharpJWT.Internal.Services;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authentication.JwtBearer;

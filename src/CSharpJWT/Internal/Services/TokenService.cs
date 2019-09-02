@@ -2,7 +2,7 @@
 {
     using CSharpJWT.Internal.Caches;
     using CSharpJWT.Domain;
-    using CSharpJWT.Extensions;
+    using CSharpJWT.Common.Utilities;
     using CSharpJWT.Models;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.EntityFrameworkCore;
@@ -14,6 +14,7 @@
     using System.Security.Claims;
     using System.Text;
     using System.Threading.Tasks;
+    using CSharpJWT.Common;
 
     internal sealed class TokenService : ITokenService
     {

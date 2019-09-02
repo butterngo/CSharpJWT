@@ -1,5 +1,6 @@
 ﻿namespace CSharpJWT.Internal
 {
+    using CSharpJWT.Common;
     using CSharpJWT.Extensions;
     using CSharpJWT.Models;
     using Microsoft.Extensions.Configuration;

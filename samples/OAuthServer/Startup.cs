@@ -8,8 +8,6 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using CSharpJWT.Domain;
-    using Microsoft.EntityFrameworkCore.Design;
-    using System.IO;
 
     public class Startup
     {
@@ -51,11 +49,13 @@
         {
             seedData.SeedUser();
 
-            //seedData.SeedClient();
+            seedData.SeedClient();
 
             //seedData.SeedRole();
 
             //seedData.SeedUserRole();
+
+            seedData.SeedUserClient();
 
             app.UseCSharpJWTServer();
 

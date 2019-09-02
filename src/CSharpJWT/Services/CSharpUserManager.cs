@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Security.Claims;
     using System.Threading.Tasks;
+    using CSharpJWT.Common;
     using CSharpJWT.Domain;
     using CSharpJWT.Internal.Services;
     using CSharpJWT.Models;
@@ -18,6 +19,8 @@
         private readonly CSharpSignInManager _signInManager;
 
         private readonly ITokenService _tokenService;
+
+        private readonly IClaimService _claimService;
 
         private readonly CSharpJWTContext _context;
 
@@ -34,12 +37,15 @@
             ILogger<UserManager<User>> logger,
             CSharpSignInManager signInManager,
             ITokenService tokenService,
+            IClaimService claimService,
             CSharpJWTContext context) 
             : base(store, optionsAccessor, passwordHasher, userValidators, passwordValidators, keyNormalizer, errors, services, logger)
         {
             _signInManager = signInManager;
 
             _tokenService = tokenService;
+
+            _claimService = claimService;
 
             _context = context;
         }
@@ -105,36 +111,7 @@
 
         public async Task<UserResult> GenerateBearerTokenAsync(TokenRequest tokenRequest)
         {
-            var client = tokenRequest.Client;
-
-            var user = tokenRequest.User;
-
-            var roles = await _context.UserRoles.Join(_context.Roles,
-                userRole => userRole.RoleId, role => role.Id,
-                (userRole, role) => new { userRole, role })
-                .Where(x => x.userRole.UserId.Equals(user.Id))
-                .Select(x=> new { x.role.Id, x.role.Name })
-                .ToListAsync();
-
-            if (client != null)
-            {
-                tokenRequest.Claims.Add(new Claim(CSharpClaimsIdentity.ClientKeyClaimType, client.Id));
-
-                tokenRequest.Claims.Add(new Claim(CSharpClaimsIdentity.ClientIdClaimType, client.ClientId));
-
-                tokenRequest.Claims.Add(new Claim(CSharpClaimsIdentity.ClientNameClaimType, client.ClientName));
-
-                tokenRequest.Claims.Add(new Claim(CSharpClaimsIdentity.AudienceClaimType, client.ClientUri));
-            }
-            
-            tokenRequest.Claims.Add(new Claim(CSharpClaimsIdentity.IssuerClaimType, tokenRequest.Issuer));
-
-            tokenRequest.Claims.Add(new Claim(CSharpClaimsIdentity.DefaultNameClaimType, user.Id));
-
-            tokenRequest.Claims.Add(new Claim(CSharpClaimsIdentity.DefaultRoleClaimType,
-                string.Join(",", roles.Select(x=>x.Name))));
-
-            tokenRequest.Claims.Add(new Claim(CSharpClaimsIdentity.UserNameClaimType, user.UserName));
+            tokenRequest = await _claimService.GenerateClaimAsync(new ClaimRequest(tokenRequest));
 
             return new UserResult(await _tokenService.GenerateTokenAsync(tokenRequest));
         }

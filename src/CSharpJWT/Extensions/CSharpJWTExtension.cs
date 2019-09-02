@@ -1,5 +1,8 @@
 ﻿namespace CSharpJWT.Extensions
 {
+    using CSharpJWT.Common;
+    using CSharpJWT.Common.Models;
+    using CSharpJWT.Common.Services;
     using CSharpJWT.Internal;
     using CSharpJWT.Middleware;
     using CSharpJWT.Models;
@@ -23,29 +26,29 @@
 
             app.UseMiddleware<TokenProviderMiddleware>(tokenProviderOptions);
 
+            //app.UseMiddleware<CSharpJWTValidateClientMiddleWare>
             return app;
         }
 
-        public static IServiceCollection AddCSharpJWTAuthentication(this IServiceCollection services)
+        public static IServiceCollection AddCSharpJWTAuthentication(this IServiceCollection services,
+            Action<TokenValidationOptions> options = null)
         {
-            //https://medium.com/faun/asp-net-core-entity-framework-core-with-postgresql-code-first-d99b909796d7
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            var validationOptions = new TokenValidationOptions(Configuration.Issuer, Configuration.SecurityKey);
 
-            }).AddJwtBearer(options =>
+            options?.Invoke(validationOptions);
+
+            services.AddSingleton(validationOptions);
+
+            //https://medium.com/faun/asp-net-core-entity-framework-core-with-postgresql-code-first-d99b909796d7
+            services.AddAuthentication(opts =>
             {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = false,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = Configuration.Issuer,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration.SecurityKey))
-                };
+                opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opts.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                opts.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+            }).AddJwtBearer(opts =>
+            {
+                opts.TokenValidationParameters = validationOptions.GenerateTokenValidationParameters();
             });
 
             services.AddSingleton<ICSharpAuthenticateService, CSharpAuthenticateService>();
@@ -58,33 +61,4 @@
 
        
     }
-
-    //public static class CSharpJWTClientConfiguration
-    //{
-    //    public static void Init(string issuer)
-    //    {
-    //        Configuration.Issuer = issuer;
-
-    //        using (var client = new HttpClient())
-    //        {
-    //            try
-    //            {
-    //                client.BaseAddress = new Uri(issuer);
-
-    //                client.Timeout = TimeSpan.FromSeconds(5);
-
-    //                var response = client.GetAsync("/oauth/secret.ssh").Result;
-
-    //                response.EnsureSuccessStatusCode();
-
-    //                Configuration.SecurityKey = response.Content.ReadAsStringAsync().Result;
-    //            }
-    //            catch
-    //            {
-    //                throw new Exception($"Not found oauth server with host {Configuration.Issuer}");
-    //            }
-    //        }
-
-    //    }
-    //}
 }

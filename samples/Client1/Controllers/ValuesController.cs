@@ -1,8 +1,8 @@
 ﻿namespace Client1.Controllers
 {
-    using CSharpJWT.Client;
-    using CSharpJWT.Client.Attributes;
-    using CSharpJWT.Client.Extensions;
+    using CSharpJWT.Authentication;
+    using CSharpJWT.Common;
+    using CSharpJWT.Common.Utilities;
     using Microsoft.AspNetCore.Mvc;
 
     [Route("api/[controller]")]
@@ -11,16 +11,15 @@
     {
         // GET api/values
         [HttpGet]
-        //[CSharpAuthorization(
+        //[CSharpAuthorize(
         //  Audiences: new string[] { "https://c-sharp.vn" }
         //, Roles: new string[] { "Administrator", "User" })]
-        [CSharpAuthorization]
+        [CSharpAuthorize]
         public ActionResult<object> Get()
         {
             return new 
             {
                 ClientId = User.Claims.GetValue(CSharpClaimsIdentity.ClientIdClaimType),
-                Audience = User.Claims.GetValue(CSharpClaimsIdentity.AudienceClaimType),
                 UserId = User.Claims.GetValue(CSharpClaimsIdentity.DefaultNameClaimType),
                 UserName = User.Claims.GetValue(CSharpClaimsIdentity.UserNameClaimType),
                 Role = User.Claims.GetValue(CSharpClaimsIdentity.DefaultRoleClaimType),

@@ -1,7 +1,9 @@
 ﻿namespace CSharpJWT.Client.Extensions
 {
-    using CSharpJWT.Client.Models;
     using CSharpJWT.Client.Services;
+    using CSharpJWT.Common;
+    using CSharpJWT.Common.Models;
+    using CSharpJWT.Common.Services;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.Extensions.DependencyInjection;
     using System;
@@ -9,18 +11,23 @@
     public static class CSharpJWTExtension
     {
         public static IServiceCollection AddCSharpJWTAuthentication(this IServiceCollection services,
-            TokenValidationOptions tokenValidationOptions)
+             Action<TokenValidationOptions> options = null)
         {
-            
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            var validationOptions = new TokenValidationOptions(Configuration.Issuer, Configuration.SecurityKey);
 
-            }).AddJwtBearer(options =>
+            options?.Invoke(validationOptions);
+
+            services.AddSingleton(validationOptions);
+
+            services.AddAuthentication(opts =>
             {
-                options.TokenValidationParameters = tokenValidationOptions.GenerateTokenValidationParameters();
+                opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opts.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                opts.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+            }).AddJwtBearer(opts =>
+            {
+                opts.TokenValidationParameters = validationOptions.GenerateTokenValidationParameters();
             });
 
             services.AddSingleton<ICSharpAuthenticateService, CSharpAuthenticateService>();

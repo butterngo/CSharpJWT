@@ -25,7 +25,8 @@
             return services
                 .AddCSharpUserManager()
                 .AddCSharpSignInManager()
-                .AddClientService();
+                .AddClientService()
+                .AddClaimService();
         }
     }
 }

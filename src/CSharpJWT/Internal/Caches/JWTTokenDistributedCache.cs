@@ -1,7 +1,8 @@
 ﻿namespace CSharpJWT.Internal.Caches
 {
-    using CSharpJWT.Extensions;
-    using CSharpJWT.Internal;
+    using CSharpJWT.Common;
+    using CSharpJWT.Common.Models;
+    using CSharpJWT.Common.Utilities;
     using CSharpJWT.Models;
     using Microsoft.Extensions.Caching.Distributed;
     using System;

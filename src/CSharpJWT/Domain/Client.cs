@@ -1,6 +1,7 @@
 ﻿namespace CSharpJWT.Domain
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
     public class Client 
@@ -16,7 +17,7 @@
         public string ClientName { get; set; }
         public string ClientUri { get; set; }
         public bool Enabled { get; set; }
-        public string Secret { get; set; } = "CSharpJWT";
+        public string Secret { get; set; } 
         public DateTime CreatedDate { get; set; }
     }
 }

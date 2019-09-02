@@ -26,3 +26,7 @@
 /samples/OAuthServer/bin
 /samples/Client1/obj
 /samples/Client1/bin
+/samples/Client2/obj
+/samples/Client2/bin
+/src/CSharpJWT.Common/obj
+/src/CSharpJWT.Common/bin

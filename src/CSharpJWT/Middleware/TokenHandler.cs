@@ -1,6 +1,6 @@
 ﻿namespace CSharpJWT.Middleware
 {
-    using CSharpJWT.Extensions;
+    using CSharpJWT.Common.Utilities;
     using CSharpJWT.Models;
     using CSharpJWT.Services;
     using Microsoft.AspNetCore.Http;

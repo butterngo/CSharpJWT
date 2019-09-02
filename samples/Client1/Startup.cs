@@ -1,7 +1,6 @@
 ﻿namespace Client1
 {
     using CSharpJWT.Client.Extensions;
-    using CSharpJWT.Client.Models;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
@@ -22,10 +21,11 @@
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.AddCSharpJWTAuthentication(new TokenValidationOptions
+            services.AddCSharpJWTAuthentication(options => 
             {
-                Issuer = Configuration.GetValue<string>("CSharpJWT:Issuer"),
-                SecurityKey = Configuration.GetValue<string>("CSharpJWT:SecurityKey"),
+                options.Issuer = Configuration.GetValue<string>("CSharpJWT:Issuer");
+                options.IssuerSigningKey = options.GenerateIssuerSigningKey(Configuration.GetValue<string>("CSharpJWT:SecurityKey"));
+                options.Scopes = new string[] { "oauthserver", "client1" };
             });
         }
 

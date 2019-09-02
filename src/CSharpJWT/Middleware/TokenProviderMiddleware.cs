@@ -39,16 +39,5 @@
                 await _next(context);
             }
         }
-
-        //private async Task DownloadSecretKeyAsync(HttpContext context)
-        //{
-        //    string secretKey = Configuration.SecurityKey;
-
-        //    context.Response.StatusCode = 200;
-
-        //    context.Response.ContentType = "text/plain";
-
-        //    await context.Response.WriteAsync(secretKey);
-        //}
     }
 }
