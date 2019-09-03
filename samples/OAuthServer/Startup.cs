@@ -31,7 +31,11 @@
 
             services.AddCSharpJWTDistributedMemoryCache();
 
-            services.AddCSharpJWTAuthentication();
+            services.AddCSharpJWTAuthentication(options =>
+            {
+                options.Issuer = Configuration.GetValue<string>("CSharpJWT:Issuer");
+                options.IssuerSigningKey = options.GenerateIssuerSigningKey(Configuration.GetValue<string>("CSharpJWT:SecurityKey"));
+            });
 
             //services.AddCSharpJWTDistributedSqlServerCache(options =>
             //{

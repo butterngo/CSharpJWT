@@ -14,7 +14,7 @@
         {
             Issuer = issuer;
 
-            if (string.IsNullOrEmpty(securityKey))
+            if (!string.IsNullOrEmpty(securityKey))
             {
                 IssuerSigningKey = GenerateIssuerSigningKey(securityKey);
             }

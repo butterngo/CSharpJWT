@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   oauthserver:
-    image: oauthserver
+    image: butterngo8050/oauthserver:1.1
     build:
       context: .
       dockerfile: ./samples/OAuthServer/Dockerfile
@@ -13,17 +13,17 @@ services:
     networks:
       - mynetwork
 
-  client1:
-    image: client1
-    build:
-      context: .
-      dockerfile: ./samples/Client1/Dockerfile
-    ports:
-      - "5001:80"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-    networks:
-      - mynetwork
+  #client1:
+   # image: client1
+   # build:
+    #  context: .
+    #  dockerfile: ./samples/Client1/Dockerfile
+    #ports:
+    #  - "5001:80"
+    #environment:
+    #  - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+    #networks:
+    #  - mynetwork
       
 networks:
   mynetwork:

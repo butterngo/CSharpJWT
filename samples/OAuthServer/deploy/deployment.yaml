@@ -1,0 +1,39 @@
+apiVersion: apps/v1 
+kind: Deployment 
+metadata: 
+  name: oauthserver-deployment 
+  labels:
+    app: oauthserver 
+spec: 
+  selector: 
+    matchLabels: 
+      app: oauthserver 
+  replicas: 1 
+  template: 
+    metadata: 
+      labels: 
+        app: oauthserver 
+    spec: 
+      containers: 
+      - name: oauthserver 
+        image: butterngo8050/oauthserver
+        ports: 
+        - containerPort: 5001
+      imagePullSecrets: 
+      - name: default-token-c9m7p
+--- 
+# Create Service for kubernetes
+kind: Service 
+apiVersion: v1 
+metadata: 
+  name: oauthserver-service 
+spec: 
+  type: LoadBalancer
+  selector: 
+    app: oauthserver 
+  ports: 
+  - protocol: TCP 
+    port: 80 
+    targetPort: 5000
+    nodePort: 31000 
+  type: NodePort 
